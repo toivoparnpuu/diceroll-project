@@ -19,8 +19,8 @@ resetButton.addEventListener("click", function() {
   });
   
 rollButton.addEventListener("click", function(){
-    parseDices(input.value);
-    rollDice();
+    let rollingList = parseDices(input.value);
+    rollDice(rollingList);
 });
 
 
@@ -34,11 +34,12 @@ function resetInputAndLog(){
     }
 }
 function parseDices(dicesInput){
-    console.log(dicesInput);
-    return 0;
+    let result = dicesInput.trim().split('+');
+    return result;
 }
 
 function rollDice(){
+    
     console.log("TODO");
 }
 
