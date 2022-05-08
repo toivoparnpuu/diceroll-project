@@ -21,6 +21,10 @@ resetButton.addEventListener("click", function() {
 rollButton.addEventListener("click", function(){
     let rollingList = parseDices(input.value);
     rollDice(rollingList);
+    rollingList.forEach(element => {
+        displayResults(element);    
+    });
+    
 });
 
 
