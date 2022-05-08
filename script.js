@@ -43,8 +43,10 @@ function rollDice(){
     console.log("TODO");
 }
 
-function displayResults(){
-    console.log("TODO");
+function displayResults(textToOutput){
+    let li = document.createElement('li');
+    li.appendChild(document.createTextNode(textToOutput));
+    writeout.appendChild(li);
 }
 
 function getRandomInt(max) {
