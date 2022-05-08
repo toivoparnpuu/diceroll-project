@@ -5,8 +5,6 @@ const selectors = {
     writeout: '.js-list'
 }
 
-
-
 const resetButton = document.querySelector(selectors.resetButton);
 const rollButton = document.querySelector(selectors.rollButton);
 const input = document.querySelector(selectors.input);
