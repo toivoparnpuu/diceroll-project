@@ -62,12 +62,14 @@ function getRandomInt(max) {
     let extraMsg = '';
     let diceRoll = Math.floor(Math.random() * max) + 1;
 
-    if (max === 20) {
-        if (diceRoll === 1){
+    if (max ==20) {
+        if (diceRoll == 1){
             extraMsg = '(critical miss)';
+            console.log(extraMsg);
         }
-        else if (diceRoll === 20) {
+        else if (diceRoll == 20) {
             extraMsg = '(critical hit)';
+            console.log(extraMsg);
         }
     };
 
