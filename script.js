@@ -18,26 +18,55 @@ resetButton.addEventListener("click", function () {
 rollButton.addEventListener("click", function () {
     clickOnRollDice();
 });
+// class
+
+class Dice {
+    #results = new Map();
+    #total = 0;
+    #input = [];
+    #inputStr = '';
+    constructor(diceCodeList){
+        this.#inputStr = diceCodeList;
+        this.#results.set('total',0);
+        this.#parseDices();
+  
+    }
+
+    #parseDices(){
+        this.#input = this.#inputStr.toLowerCase().replace(/\s/g, "").split('+');
+        this.#input.forEach(oneDice => {
+            this.#results.set(oneDice,[])
+        }); //forEach
+    }
+    doRolls(){
+            this.#results.forEach((diceValue, diceKey, map) => {
+                
+                let rolls = diceKey.split('d')[0]; 
+                let sides = diceKey.split('d')[1];
+                this.#results.set(diceKey, this.#roll(rolls, sides));
+                 
+            });
+            console.log('veeretatud: ', this.#results);
+            this.#results.set('total',[this.#total]);
+            return this.#results;
+        }
+    #roll(rolls, sides){
+        let result = [];
+        let randomNr = 0;
+        for (let i = 0; i < rolls; i++) {
+            randomNr = Math.floor(Math.random() * sides) + 1;
+            this.#total = this.#total + randomNr;
+            result.push(randomNr); 
+        }
+        return result;
+    }
+    } // class Dice
 
 // functions
 function clickOnRollDice() {
-    let rollingList = parseDices(input.value);
-    let diceTotal = 0;
-    diceList = [];
-    
-    rollingList.forEach(element => {
-        let diceCode = element.split('d')[1];
-        let diceRolls = element.split('d')[0];
-
-        for (let i = 0; i < diceRolls; i++) {
-            let diceResult = getRandomInt(diceCode);
-            diceList.push(diceResult[0]);
-            displayResults('d' + diceCode + ': ' + diceResult.join(' '));
-            diceTotal = diceTotal + diceResult[0];
-        }
-    });
-
-    displayResults('KOKKU: ' + diceList.join(' + ') + ' = ' + diceTotal);
+    const myDice = new Dice(input.value);
+    displayResults(myDice.doRolls());
+    //displayResults('KOKKU: ' + diceList.join(' + ') + ' = ' + diceTotal);
 }
 
 function resetInputAndLog() {
@@ -47,31 +76,24 @@ function resetInputAndLog() {
     }
 }
 
-function parseDices(dicesInput) {
-    let result = dicesInput.trim().split('+');
-    return result;
-}
+function displayResults(mapToOutput) {
+    textRow = '';
+    mapToOutput.forEach((value, key) => {
+        if (key == 'total') {
+            
+        } else {
+            let li = document.createElement('li');
+            textRow = `${'d' + key.split('d')[1]} : ${value.join(', ')}`;
+            li.appendChild(document.createTextNode(textRow));
+            writeout.appendChild(li);            
+        }
+    }); //forEach
 
-function displayResults(textToOutput) {
     let li = document.createElement('li');
-    li.appendChild(document.createTextNode(textToOutput));
-    writeout.appendChild(li);
+    textRow = `Total : ${mapToOutput.get('total')}`;
+    li.appendChild(document.createTextNode(textRow));
+    writeout.appendChild(li);  
+
+
 } 
-
-function getRandomInt(max) {
-    let extraMsg = '';
-    let diceRoll = Math.floor(Math.random() * max) + 1;
-
-    if (max ==20) {
-        if (diceRoll == 1){
-            extraMsg = '(critical miss)';
-            console.log(extraMsg);
-        }
-        else if (diceRoll == 20) {
-            extraMsg = '(critical hit)';
-            console.log(extraMsg);
-        }
-    };
-
-    return [diceRoll, extraMsg];
-}
+//https://codepen.io/vicentemundim/pen/nXNvBw
