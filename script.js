@@ -25,47 +25,53 @@ class Dice {
     #total = 0;
     #input = [];
     #inputStr = '';
-    constructor(diceCodeList){
+    constructor(diceCodeList) {
         this.#inputStr = diceCodeList;
-        this.#results.set('total',0);
+        this.#results.set('total', 0);
         this.#parseDices();
-  
+
     }
 
-    #parseDices(){
+    #parseDices() {
         this.#input = this.#inputStr.toLowerCase().replace(/\s/g, "").split('+');
         this.#input.forEach(oneDice => {
-            this.#results.set(oneDice,[])
+            this.#results.set(oneDice, [])
         }); //forEach
     }
-    doRolls(){
-            this.#results.forEach((diceValue, diceKey, map) => {
-                
-                let rolls = diceKey.split('d')[0]; 
-                let sides = diceKey.split('d')[1];
-                this.#results.set(diceKey, this.#roll(rolls, sides));
-                 
-            });
-            console.log('veeretatud: ', this.#results);
-            this.#results.set('total',[this.#total]);
-            return this.#results;
-        }
-    #roll(rolls, sides){
+    doRolls() {
+        this.#results.forEach((diceValue, diceKey, map) => {
+
+            let rolls = diceKey.split('d')[0];
+            let sides = diceKey.split('d')[1];
+            this.#results.set(diceKey, this.#roll(rolls, sides));
+
+        });
+        this.#results.set('total', [this.#total]);
+
+    }
+    #roll(rolls, sides) {
         let result = [];
         let randomNr = 0;
         for (let i = 0; i < rolls; i++) {
             randomNr = Math.floor(Math.random() * sides) + 1;
             this.#total = this.#total + randomNr;
-            result.push(randomNr); 
+            result.push(randomNr);
         }
         return result;
     }
-    } // class Dice
+    get diceList() {
+        return this.#input
+    }
+    get rollResults() {
+        return this.#results;
+    }
+} // class Dice
 
 // functions
 function clickOnRollDice() {
     const myDice = new Dice(input.value);
-    displayResults(myDice.doRolls());
+    myDice.doRolls()
+    displayResults(myDice);
     //displayResults('KOKKU: ' + diceList.join(' + ') + ' = ' + diceTotal);
 }
 
@@ -76,24 +82,34 @@ function resetInputAndLog() {
     }
 }
 
-function displayResults(mapToOutput) {
-    textRow = '';
-    mapToOutput.forEach((value, key) => {
-        if (key == 'total') {
-            
-        } else {
+function displayResults(diceObject) {
+    let textRow = '';
+    let rollMap = diceObject.rollResults;
+    let diceInput = diceObject.diceList;
+    diceInput.push('total');
+
+    console.log(diceInput);
+    diceInput.forEach((element) => {
+        rollMap.get(element).forEach((diceResult) => {
             let li = document.createElement('li');
-            textRow = `${'d' + key.split('d')[1]} : ${value.join(', ')}`;
+            if (element.match('d20') && diceResult == 20) {
+                textRow = `1d20 : ${diceResult} - critical hit!`;
+                li.className='criticalhit';
+                console.log('hei');
+            }  else if (element.match('d20') && diceResult == 1) {
+                textRow = `1d20 : ${diceResult} - critical miss!`;
+                li.className='criticalmiss';
+
+            }  else if  (element == 'total'){
+                textRow = `Total : ${rollMap.get('total')}`;
+            } else {
+                textRow = `1d${element.split('d')[1]} : ${diceResult}`;
+            }
+
             li.appendChild(document.createTextNode(textRow));
-            writeout.appendChild(li);            
-        }
-    }); //forEach
+            writeout.appendChild(li);
+        });
 
-    let li = document.createElement('li');
-    textRow = `Total : ${mapToOutput.get('total')}`;
-    li.appendChild(document.createTextNode(textRow));
-    writeout.appendChild(li);  
-
-
-} 
+    });
+}
 //https://codepen.io/vicentemundim/pen/nXNvBw
